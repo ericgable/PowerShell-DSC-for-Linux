@@ -458,6 +458,16 @@ if nxGroup != None:
             r=nxPackageBroken.Inventory_Marshall('','','*','',False,'',0)
             os.system('rm /tmp/nxPackageBroken.py')
             self.assertTrue(len(r[1]['__Inventory'].value) == 0,"nxPackageBroken.Inventory_Marshall('','','*','',False,'',0)  should return empty MI_INSTANCEA.")
+
+def IsSles11_4():
+    if os.path.exists('/etc/SuSE-release'):
+        txt = open('/etc/SuSE-release','r').read()
+        s=r'.*?VERSION.*?=(.*?)\n.*?PATCHLEVEL.*?=(.*?)\n'
+        m = re.search(s, txt, re.M)
+        if m != None:
+            return (int(m.group(1)) == 11 and  int(m.group(2)) == 4)
+    else:
+        return False
     
 nxServiceTestCases = None
 if nxService != None:
@@ -541,7 +551,10 @@ if nxService != None:
             r=nxService.Inventory_Marshall('*', '*', None,'')
             self.assertTrue(r[0] == 0,"Inventory_Marshall('*', " + self.controller + ", None,'')  should return == 0")
             print repr(r[1])
-    
+
+        # SLES 11-SP4 chkconfig can return error code on success,
+        # so don't run if this is the case.
+        @unittest2.skipIf(IsSles11_4() == True,'Skipping as some SLES 11-SP4 versions of chkconfig can return error code on success')    
         def testInventoryMarshallCmdlineError(self):
             os.system('cp  ./Scripts/nxService.py /tmp/nxServiceBroken.py')
             os.system('sed -i "s/--status-all/--atus-all/" /opt/microsoft/omsconfig/Scripts/OMSServiceStatAll.sh')
@@ -803,8 +816,8 @@ if nxOMSCustomLog != None:
             'Get('+repr(g)+' should return ==['+repr(m)+']')
     
 nxOMSKeyMgmt_cls_setup_txt = """import os
-if not os.path.exists(cls.conf_dir):
-    os.system('mkdir -p ' + cls.conf_dir + ' 2>&1 >/dev/null')
+if not os.path.exists('/etc/opt/omi/conf/omsconfig'):
+    os.system('mkdir -p /etc/opt/omi/conf/omsconfig 2>&1 >/dev/null')
 os.system('cp -a  /etc/opt/omi/conf/omsconfig/keymgmtring.gpg  \
           /etc/opt/omi/conf/omsconfig/keymgmtring.gpg.bak 2>&1 >/dev/null')
 os.system('cp -a /etc/opt/omi/conf/omsconfig/keyring.gpg \

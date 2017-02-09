@@ -39,15 +39,12 @@ os.system('cp -r  /tmp/omsconfig/opt/microsoft/omsconfig/module_packages/*/DSCRe
 # Setup the directories and files
 if not os.path.exists('/var/opt'):
     os.symlink('/tmp/omsconfig/var/opt','/var/opt')
-    #os.system('cp -r /tmp/omsconfig/var/opt /var/opt')
 if not os.path.exists('/etc/opt'):
     os.symlink('/tmp/omsconfig/etc/opt','/etc/opt')
-    #os.system('cp -r /tmp/omsconfig/etc/opt /etc/opt')
 if not os.path.exists('/opt/microsoft/'):
     os.makedirs('/opt/microsoft/')
 if not os.path.exists('/opt/microsoft/omsconfig'):
     os.symlink('/tmp/omsconfig/opt/microsoft/omsconfig','/opt/microsoft/omsconfig')
-    #os.system('cp -r /tmp/omsconfig/opt/microsoft/omsconfig /opt/microsoft/omsconfig')
 if os.system('grep -q "omsagent:" /etc/group'):
     os.system('groupadd -r omsagent')
 os.system('touch /tmp/omstest_cleanup_group')
@@ -55,21 +52,14 @@ if os.system('grep -q "omsagent:" /etc/passwd'):
     os.system('useradd -r -c "OMS agent" -d /var/opt/microsoft/omsagent/run -g omsagent -s /bin/bash omsagent')
 os.system('touch /tmp/omstest_cleanup_user')
 os.system('mkdir -p /tmp/omsconfig/var/opt/microsoft/omsagent/run; mkdir -p /var/opt') 
-#os.symlink('/tmp/omsconfig/var/opt/microsoft/', '/var/opt/microsoft')
-#os.system('mkdir -p /etc/opt/')
-#os.symlink('/tmp/omsconfig/etc/opt/microsoft/', '/etc/opt/microsoft')
 os.system('chmod a+wrx /tmp/omsconfig/etc/opt/omi/conf/omsconfig/')
 os.system('chown -R omsagent.omsagent /tmp/omsconfig')
-#os.system('chown -R omsagent.omsagent /etc/opt')
-#os.system('chown -R omsagent.omsagent /opt/microsoft/omsconfig/Scripts')
-#os.system('chgrp -R omsagent /etc/opt/omi/conf/omsconfig')
-#os.system('chgrp -R omsagent /opt/microsoft/omsconfig/Scripts')
 os.system('touch /var/opt/microsoft/omsagent/run/.bash_profile')
 os.system('chmod 755 /etc/opt')
 os.system('mkdir -p /tmp/omsconfig/var/opt/microsoft/omsconfig')
 os.system('chown -R omsagent /tmp/omsconfig/var/opt')
-#os.system('chown -R omsagent /var/opt/microsoft/omsagent/run')
-#os.system('chgrp -R omsagent /var/opt/microsoft/omsagent/run')
+os.system('mkdir -p /var/opt/microsoft/omsagent/run/.gnupg')
+os.system('chown -R omsagent /var/opt/microsoft/omsagent/run/.gnupg')
 
 # Setup omsconfig sudoers and add python as passwordless root.
 os.system('echo "omsagent ALL=(ALL) NOPASSWD: `which python` " >> /etc/opt/microsoft/omsagent/sysconf/sudoers')
@@ -81,8 +71,6 @@ os.system('su omsagent -c "/opt/microsoft/omsconfig/Scripts/RegenerateInitFiles.
 # Import the keys
 os.system('su omsagent -c "/opt/microsoft/omsconfig/Scripts/ImportGPGKey.sh /opt/microsoft/omsconfig/keys/msgpgkey.asc keymgmtring.gpg"')
 os.system('su omsagent -c "/opt/microsoft/omsconfig/Scripts/ImportGPGKey.sh /opt/microsoft/omsconfig/keys/dscgpgkey.asc keyring.gpg"')
-#os.system('mkdir -p /var/opt/microsoft/omsconfig')
-#os.system('chgrp -R omsagent /var/opt/microsoft/omsconfig')
 
 # Setup fake syslog/rsyslog oms conf files.
 if not os.path.exists('/etc/opt/omi/conf/omsconfig/syslog-ng-oms.conf'):
@@ -109,7 +97,6 @@ destpath = '/opt/microsoft/omsconfig/Scripts/' + sys.argv[2] + '/Scripts/'
 srcpath = '/' + os.path.join(*os.path.realpath(__file__).split('/')[:-1])
 os.system('cp -r ' + srcpath + ' ' + destpath)
 os.system('chown -R omsagent /opt/microsoft/omsconfig/Scripts')
-#os.system('chgrp -R omsagent /opt/microsoft/omsconfig/Scripts')
 os.chdir(destpath + 'Tests')
 
 #Don't restart the service as it is not installed.
