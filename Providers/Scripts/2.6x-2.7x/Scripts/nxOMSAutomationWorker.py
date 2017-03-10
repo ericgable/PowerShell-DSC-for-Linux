@@ -16,19 +16,26 @@ import pwd
 import imp
 protocol = imp.load_source('protocol', '../protocol.py')
 nxDSCLog = imp.load_source('nxDSCLog', '../nxDSCLog.py')
+serializerfactory = imp.load_source('serializerfactory', '../../modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/serializerfactory.py')
 LG = nxDSCLog.DSCLog
 
 
-def init_locals(WorkspaceId, AzureDnsAgentSvcZone):
-    if WorkspaceId is None:
-        WorkspaceId = ''
-    if AzureDnsAgentSvcZone is None:
-        AzureDnsAgentSvcZone = ''
-    return WorkspaceId.encode('ascii', 'ignore'), AzureDnsAgentSvcZone.encode('ascii', 'ignore')
+def init_locals(json_serialized_string):
+    try:
+        json_serializer = serializerfactory.get_serializer(sys.version_info)
+        settings = json_serializer.loads(json_serialized_string)
+        workspace_id = settings[0]["WorksapceId"].encode("ascii", "ignore")
+        enabled = settings[0]["Solutions"]["Updates"]["Enabled"]
+        azure_dns_agent_svc_zone = settings[0]["AzureDnsAgentSvcZone"].encode("ascii", "ignore")
+        return workspace_id, enabled, azure_dns_agent_svc_zone
+    except Exception as e:
+        log(ERROR, "Json parameters deserialization Error: " + Exception.message)
+        raise e
 
 
-def Set_Marshall(WorkspaceId, Enabled, AzureDnsAgentSvcZone):
-    WorkspaceId, AzureDnsAgentSvcZone = init_locals(WorkspaceId, AzureDnsAgentSvcZone)
+
+def Set_Marshall(ResourceSettings):
+    WorkspaceId, Enabled, AzureDnsAgentSvcZone = init_locals(ResourceSettings)
     return set_marshall_helper(WorkspaceId, Enabled, AzureDnsAgentSvcZone)
 
 
@@ -147,8 +154,8 @@ def set_marshall_helper(WorkspaceId, Enabled, AzureDnsAgentSvcZone, mock_worker_
     return [0]
 
 
-def Test_Marshall(WorkspaceId, Enabled, AzureDnsAgentSvcZone):
-    init_locals(WorkspaceId, AzureDnsAgentSvcZone)
+def Test_Marshall(ResourceSettings):
+    WorkspaceId, Enabled, AzureDnsAgentSvcZone = init_locals(ResourceSettings)
     try:
         isprimary = is_oms_primary_workspace(WorkspaceId)
     except Exception, e:
@@ -215,8 +222,8 @@ def Test_Marshall(WorkspaceId, Enabled, AzureDnsAgentSvcZone):
     return [-1]
 
 
-def Get_Marshall(WorkspaceId, Enabled, AzureDnsAgentSvcZone):
-    WorkspaceId, AzureDnsAgentSvcZone = init_locals(WorkspaceId, AzureDnsAgentSvcZone)
+def Get_Marshall(ResourceSettings):
+    WorkspaceId, Enabled, AzureDnsAgentSvcZone = init_locals(ResourceSettings)
     retval = 0
     retd = dict()
     retd['WorkspaceId'] = protocol.MI_String(WorkspaceId)
