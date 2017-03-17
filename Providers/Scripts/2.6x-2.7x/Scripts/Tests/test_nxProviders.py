@@ -4882,7 +4882,7 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
 
 
     def test_can_start_verify_kill_worker_manager(self):
-        shutil.copyfile(os.path.join(self.dummyFileLocation, "oms_conf_auto_manual.conf", nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
+        shutil.copyfile(os.path.join(self.dummyFileLocation, "oms_conf_auto_manual.conf"), nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
         nxOMSAutomationWorker.start_worker_manager_process(self.workspace_id)
         pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspace_id)
         self.assertTrue(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspace_id))

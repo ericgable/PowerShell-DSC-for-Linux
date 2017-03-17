@@ -41,7 +41,7 @@ def Set_Marshall(ResourceSettings):
             os.makedirs(WORKING_DIRECTORY_PATH, PERMISSION_LEVEL_0770)
 
         # Create the configuration object
-        write_omsconf_file(diy_enabled, updates_enabled)
+        write_omsconf_file(updates_enabled, diy_enabled)
         os.chmod(OMS_CONF_FILE_PATH, PERMISSION_LEVEL_0770)
 
         log(DEBUG, "oms.conf file was written")
@@ -156,7 +156,7 @@ def read_settings_from_mof_json(json_serialized_string):
         raise e
 
 
-def write_omsconf_file(diy_enabled, updates_enabled):
+def write_omsconf_file(updates_enabled, diy_enabled):
     oms_config = ConfigParser.ConfigParser()
     if os.path.isfile(OMS_CONF_FILE_PATH):
         oms_config.read(OMS_CONF_FILE_PATH)
@@ -277,7 +277,7 @@ def get_worker_manager_pid_and_version(workspace_id, throw_error_on_multiple_fou
     if proc.returncode != 0 or error:
         log(INFO, "Failed to detect instance of worker manager")
         return -1, "0.0"
-    processes = command.split('\n')
+    processes = command.strip().split('\n')
     manager_processes_found = 0
     pid = -1
     version = "0.0"
