@@ -24,6 +24,7 @@ import socket
 import thread
 import shutil
 import signal
+import filecmp
 import cPickle as pickle
 from contextlib import contextmanager
 
@@ -4895,7 +4896,43 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
         os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
 
     def test_parsing_parameters_and_creation_of_omsconf(self):
-        auto_enabled_manual_enabled = ""
+        auto_enabled_manual_enabled = "[{\"WorksapceId\":\"2a74e541-3e9f-40f3-b04b-ae9cad0e5c24\",\"AzureDnsAgentSvcZone\":\"df-agentsvc.azure-automation.net\",\"Solutions\":{\"Updates\":{\"Enabled\":true},\"AzureAutomation\":{\"Enabled\":true,\"Parameter1\":\"PARAM_11\",\"Parameter2\":\"PARAM_12\"}}}]"
+        auto_disabled_manual_enabled = "[{\"WorksapceId\":\"2a74e541-3e9f-40f3-b04b-ae9cad0e5c24\",\"AzureDnsAgentSvcZone\":\"df-agentsvc.azure-automation.net\",\"Solutions\":{\"Updates\":{\"Enabled\":false},\"AzureAutomation\":{\"Enabled\":true,\"Parameter1\":\"PARAM_11\",\"Parameter2\":\"PARAM_12\"}}}]"
+        auto_enabled_manual_disabled = "[{\"WorksapceId\":\"2a74e541-3e9f-40f3-b04b-ae9cad0e5c24\",\"AzureDnsAgentSvcZone\":\"df-agentsvc.azure-automation.net\",\"Solutions\":{\"Updates\":{\"Enabled\":true},\"AzureAutomation\":{\"Enabled\":false,\"Parameter1\":\"PARAM_11\",\"Parameter2\":\"PARAM_12\"}}}]"
+        auto_disabled_manual_disabled = "[{\"WorksapceId\":\"2a74e541-3e9f-40f3-b04b-ae9cad0e5c24\",\"AzureDnsAgentSvcZone\":\"df-agentsvc.azure-automation.net\",\"Solutions\":{\"Updates\":{\"Enabled\":false},\"AzureAutomation\":{\"Enabled\":false,\"Parameter1\":\"PARAM_11\",\"Parameter2\":\"PARAM_12\"}}}]"
+
+        if os.path.isfile(nxOMSAutomationWorker.OMS_CONF_FILE_PATH):
+            os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
+        workspace_id, azure_dns_agent_svc_zone, updates_enabled, diy_enabled = nxOMSAutomationWorker.read_settings_from_mof_json(
+            auto_enabled_manual_enabled)
+        nxOMSAutomationWorker.write_omsconf_file(updates_enabled, diy_enabled)
+        self.assertTrue(filecmp.cmp(os.path.join(self.dummyFileLocation, "oms_conf_auto_manual.conf"),
+                                    nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
+
+        if os.path.isfile(nxOMSAutomationWorker.OMS_CONF_FILE_PATH):
+            os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
+        workspace_id, azure_dns_agent_svc_zone, updates_enabled, diy_enabled = nxOMSAutomationWorker.read_settings_from_mof_json(
+            auto_disabled_manual_enabled)
+        nxOMSAutomationWorker.write_omsconf_file(updates_enabled, diy_enabled)
+        self.assertTrue(filecmp.cmp(os.path.join(self.dummyFileLocation, "oms_conf_manual.conf"),
+                                    nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
+
+        if os.path.isfile(nxOMSAutomationWorker.OMS_CONF_FILE_PATH):
+            os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
+        workspace_id, azure_dns_agent_svc_zone, updates_enabled, diy_enabled = nxOMSAutomationWorker.read_settings_from_mof_json(
+            auto_enabled_manual_disabled)
+        nxOMSAutomationWorker.write_omsconf_file(updates_enabled, diy_enabled)
+        self.assertTrue(filecmp.cmp(os.path.join(self.dummyFileLocation, "oms_conf_auto.conf"),
+                                    nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
+
+        if os.path.isfile(nxOMSAutomationWorker.OMS_CONF_FILE_PATH):
+            os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
+        workspace_id, azure_dns_agent_svc_zone, updates_enabled, diy_enabled = nxOMSAutomationWorker.read_settings_from_mof_json(
+            auto_disabled_manual_disabled)
+        nxOMSAutomationWorker.write_omsconf_file(updates_enabled, diy_enabled)
+        self.assertTrue(filecmp.cmp(os.path.join(self.dummyFileLocation, "oms_conf_none.conf"),
+                                    nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
+
 
 
 ######################################
