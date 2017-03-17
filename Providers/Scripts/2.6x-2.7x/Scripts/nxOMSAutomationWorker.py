@@ -125,7 +125,6 @@ DSC_RESOURCE_VERSION_FILE = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWor
 OMS_ADMIN_CONFIG_FILE = "/etc/opt/microsoft/omsagent/conf/omsadmin.conf"
 WORKING_DIRECTORY_PATH = "/var/opt/microsoft/omsagent/run/automationworker"
 WORKER_MANAGER_START_PATH = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/main.py"
-LOCAL_LOG_LOCATION = "/var/opt/microsoft/omsagent/log/nxOMSAutomationWorker.log"
 
 # permission level rwx rwx ---
 # leading zero is necessary because this is an octal number
@@ -133,6 +132,9 @@ LOCAL_LOG_LOCATION = "/var/opt/microsoft/omsagent/log/nxOMSAutomationWorker.log"
 PERMISSION_LEVEL_0770 = 0770
 
 AUTOMATION_USER = "nxautomation"
+
+LOCAL_LOG_LOCATION = "/var/opt/microsoft/omsagent/log/nxOMSAutomationWorker.log"
+LOG_LOCALLY = False
 
 # User defined functions
 
@@ -355,24 +357,17 @@ def log(level, message):
         LG().Log(logging._levelNames[level], message)
     except:
         pass
+    if LOG_LOCALLY:
+        try:
+            log_local(level, message)
+        except:
+            pass
 
 
-class LocalLog:
-    logger = None
-    logfh = None
+def log_local(level, message):
+    log_fh = open(LOCAL_LOG_LOCATION, 'ab')
+    log_fh.write("%s: %s" %(logging._levelNames[level], message))
+    log_fh.close()
 
-
-    def __init__(self):
-        if LocalLog.logger is None or LocalLog.logfh is None:
-            LocalLog.logger = logging.getLogger()
-            LocalLog.logfh = logging.handlers.RotatingFileHandler(LOCAL_LOG_LOCATION, mode='a', maxBytes=1048576, backupCount=20)
-            formatter = logging.Formatter('%(levelname)s - %(asctime)s - %(message)s')
-            LocalLog.logger.setLevel(DEBUG)
-            LocalLog.logfh.setFormatter(formatter)
-            LocalLog.logger.addHandler(LocalLog.logfh)
-
-
-    def log(self, level, message):
-        LocalLog.logger.log(level, message)
 
 
