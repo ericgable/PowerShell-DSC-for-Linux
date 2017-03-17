@@ -15,7 +15,11 @@ import pwd
 import imp
 protocol = imp.load_source('protocol', '../protocol.py')
 nxDSCLog = imp.load_source('nxDSCLog', '../nxDSCLog.py')
-serializerfactory = imp.load_source('serializerfactory', '../../modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/serializerfactory.py')
+try:
+    serializerfactory = imp.load_source('serializerfactory', '../../modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/serializerfactory.py')
+except:
+    # this is the path when running tests
+    serializerfactory = imp.load_source('serializerfactory', '../../nxOMSAutomationWorker/automationworker/worker/serializerfactory.py')
 LG = nxDSCLog.DSCLog
 
 def Set_Marshall(ResourceSettings):
@@ -245,21 +249,21 @@ def start_worker_manager_process(workspace_id):
     :param workspace_id:
     :return: the pid of the worker manager process
     """
-    proc = subprocess.Popen(["sudo", "-u", AUTOMATION_USER, WORKER_MANAGER_START_PATH, OMS_CONF_FILE_PATH, workspace_id,
+    proc = subprocess.Popen(["sudo", "-u", AUTOMATION_USER, "python", WORKER_MANAGER_START_PATH, OMS_CONF_FILE_PATH, workspace_id,
                              get_module_version()])
-    proc.wait(5)
-    manager_process_detected = False
     for i in range(0, 5):
         time.sleep(3)
-        pid = get_worker_manager_pid_and_version(workspace_id)[0]
+        pid = get_worker_manager_pid_and_version(workspace_id, throw_error_on_multiple_found=False)[0]
         if pid > 0:
             # if the pid is greater than 0
-            manager_process_detected = True
             return pid
+
+    # Failure path
+    proc.kill()
     return -1
 
 
-def get_worker_manager_pid_and_version(workspace_id):
+def get_worker_manager_pid_and_version(workspace_id, throw_error_on_multiple_found = True):
     """
     Returns the PID of the worker manager
     :return: pid of the worker manager, -1 if it isn't running
@@ -278,14 +282,16 @@ def get_worker_manager_pid_and_version(workspace_id):
     pid = -1
     version = "0.0"
     for process_line in processes:
-        split_line = process_line.split(" ")
-        pid = int(split_line[0])
-        args = " ".join(split_line[1:])
-        version = split_line[-1].strip()
-        if WORKER_MANAGER_START_PATH in args and workspace_id in args:
-            manager_processes_found += 1
-            if manager_processes_found > 1:
-                raise AssertionError("More than one manager processes found")
+        if process_line:
+            # make sure process_line is not null or empty
+            split_line = process_line.split(" ")
+            pid = int(split_line[0])
+            args = " ".join(split_line[1:])
+            version = split_line[-1].strip()
+            if WORKER_MANAGER_START_PATH in args and workspace_id in args:
+                manager_processes_found += 1
+                if throw_error_on_multiple_found and manager_processes_found > 1:
+                    raise AssertionError("More than one manager processes found")
     if pid == -1:
         log(INFO, "Failed to detect instance of worker manager")
     return pid, version
@@ -313,13 +319,14 @@ def kill_worker_manager(workspace_id):
     #---- section for debugging
     proc = subprocess.Popen(["pgrep", "-u", AUTOMATION_USER, "-f", pattern_match_string])
     result, error = proc.communicate()
+    result = str(result)
     result = result.replace('\n', ' ')
     log(DEBUG, "The following worker manager processes will be terminated: %s" %result)
     #---- end section
 
     subprocess.call(["sudo", "pkill", "-u", AUTOMATION_USER, "-f", pattern_match_string])
     # can't depend on the return value to ensure that the process was killed since it pattern matches
-    pid, version = get_worker_manager_pid_and_version()
+    pid, version = get_worker_manager_pid_and_version(workspace_id)
     if pid > 0:
         # worker was not killed
         raise OSError("Could not kill worker manager process")

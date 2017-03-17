@@ -4820,7 +4820,7 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
     """
     Test Case for nxOMSAutomationWorker.py
     """
-    workspaceId = 'cfd4ef08-4011-428a-8947-0c2f4605980f'
+    workspace_id = 'cfd4ef08-4011-428a-8947-0c2f4605980f'
     agent_id = 'cfd4ef08-4011-428a-8947-0c2f4605980g'
     AzureDnsAgentSvcZone = 'agentsvc.azure-automation.net'
     temp_run_dir = os.path.join(os.getcwd(), 'Scripts/Tests/temp')
@@ -4866,30 +4866,33 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
         Setup Test resources
         """
         if not os.path.isdir(self.temp_run_dir):
-            os.mkdirs(self.temp_run_dir, 0o777)
+            os.mkdir(self.temp_run_dir, 0o777)
         # create nxautomation user on the machine
         self.create_nxautomation_user_and_group()
+        subprocess.call(["sudo", "pkill", "-u", self.automation_user])
 
     def tearDown(self):
         """
         Remove test resoruces
         """
-        self.kill_all_workers()
+        subprocess.call(["sudo", "pkill", "-u", self.automation_user])
         shutil.rmtree(self.temp_run_dir)
         self.remove_nxautomation_user_and_group()
 
 
     def test_can_start_verify_kill_worker_manager(self):
-        nxOMSAutomationWorker.start_worker_manager_process(self.workspaceId)
-        pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspaceId)
-        self.assertTrue(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspaceId))
+        nxOMSAutomationWorker.write_omsconf_file(True, True)
+        nxOMSAutomationWorker.start_worker_manager_process(self.workspace_id)
+        pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspace_id)
+        self.assertTrue(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspace_id))
         self.assertTrue(pid > 0)
         self.assertTrue(version == "1.4")
 
-        nxOMSAutomationWorker.kill_worker_manager(self.workspaceId)
-        self.assertFalse(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspaceId))
-        pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspaceId)
+        nxOMSAutomationWorker.kill_worker_manager(self.workspace_id)
+        self.assertFalse(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspace_id))
+        pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspace_id)
         self.assertTrue(pid == -1)
+        os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
 
 
 
@@ -4920,5 +4923,6 @@ if __name__ == '__main__':
     s23=unittest2.TestLoader().loadTestsFromTestCase(nxOMSGenerateInventoryMofTestCases)
     s24=unittest2.TestLoader().loadTestsFromTestCase(nxOMSAgentNPMConfigTestCases)
     s25=unittest2.TestLoader().loadTestsFromTestCase(nxOMSAutomationWorkerTestCases)
-    alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s23,s24,s25])
+    alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,
+                                    s23,s24,s25])
     unittest2.TextTestRunner(stream=sys.stdout,verbosity=3).run(alltests)
