@@ -4881,7 +4881,7 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
 
 
     def test_can_start_verify_kill_worker_manager(self):
-        nxOMSAutomationWorker.write_omsconf_file(True, True)
+        shutil.copyfile(os.path.join(self.dummyFileLocation, "oms_conf_auto_manual.conf", nxOMSAutomationWorker.OMS_CONF_FILE_PATH))
         nxOMSAutomationWorker.start_worker_manager_process(self.workspace_id)
         pid, version = nxOMSAutomationWorker.get_worker_manager_pid_and_version(self.workspace_id)
         self.assertTrue(nxOMSAutomationWorker.is_worker_manager_running_latest_version(self.workspace_id))
@@ -4894,6 +4894,8 @@ class nxOMSAutomationWorkerTestCases(unittest2.TestCase):
         self.assertTrue(pid == -1)
         os.remove(nxOMSAutomationWorker.OMS_CONF_FILE_PATH)
 
+    def test_parsing_parameters_and_creation_of_omsconf(self):
+        auto_enabled_manual_enabled = ""
 
 
 ######################################
@@ -4923,6 +4925,6 @@ if __name__ == '__main__':
     s23=unittest2.TestLoader().loadTestsFromTestCase(nxOMSGenerateInventoryMofTestCases)
     s24=unittest2.TestLoader().loadTestsFromTestCase(nxOMSAgentNPMConfigTestCases)
     s25=unittest2.TestLoader().loadTestsFromTestCase(nxOMSAutomationWorkerTestCases)
-    alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,
-                                    s23,s24,s25])
+    alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,
+                                    s18,s19,s20,s21,s22,s23,s24,s25])
     unittest2.TextTestRunner(stream=sys.stdout,verbosity=3).run(alltests)
