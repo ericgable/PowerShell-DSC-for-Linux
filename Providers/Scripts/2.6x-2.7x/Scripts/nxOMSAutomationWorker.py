@@ -35,19 +35,52 @@ def Set_Marshall(ResourceSettings):
         kill_worker_manager(workspace_id)
 
         # Set up conf and working directories if it doesn't exit
-        if not os.path.isdir(WORKER_CONF_DIR):
-            os.makedirs(WORKER_CONF_DIR, PERMISSION_LEVEL_0770)
+        if not os.path.isdir(WORKER_STATE_DIR):
+            os.makedirs(WORKER_STATE_DIR, PERMISSION_LEVEL_0770)
         if not os.path.isdir(WORKING_DIRECTORY_PATH):
             os.makedirs(WORKING_DIRECTORY_PATH, PERMISSION_LEVEL_0770)
+
+        # if the directory has file permission level of at least 770 then no need to set it again
+        if os.stat(WORKING_DIRECTORY_PATH).st_mode & PERMISSION_LEVEL_0770 != PERMISSION_LEVEL_0770:
+            os.chmod(WORKING_DIRECTORY_PATH, PERMISSION_LEVEL_0770)
+
+        # if the directory has file permission level of at least 770 then no need to set it again
+        if os.stat(WORKER_STATE_DIR).st_mode & PERMISSION_LEVEL_0770 != PERMISSION_LEVEL_0770:
+            os.chmod(WORKER_STATE_DIR, PERMISSION_LEVEL_0770)
 
         # Create the configuration object
         write_omsconf_file(updates_enabled, diy_enabled)
         os.chmod(OMS_CONF_FILE_PATH, PERMISSION_LEVEL_0770)
 
         log(DEBUG, "oms.conf file was written")
-        # start the worker manager process
 
-        start_worker_manager_process(workspace_id)
+        # Write worker.conf file
+        oms_workspace_id, agent_id = read_oms_primary_workspace_config_file()
+        # If both proxy files exist use the new one
+        # If neither exist use the new path, path will have no file in it, but no file means no proxy set up
+        # If one of them exists, use that
+        proxy_conf_path = PROXY_CONF_PATH_NEW
+        if not os.path.isfile(PROXY_CONF_PATH_NEW) and os.path.isfile(PROXY_CONF_PATH_LEGACY):
+            proxy_conf_path = PROXY_CONF_PATH_LEGACY
+
+        proc = subprocess.Popen(
+            ["python", REGISTRATION_FILE_PATH, "--register", "-w", workspace_id, "-a", agent_id,
+             "-c", OMS_CERTIFICATE_PATH, "-k", OMS_CERT_KEY_PATH, "-f", WORKING_DIRECTORY_PATH, "-s",
+             WORKER_STATE_DIR, "-e", azure_dns_agent_svc_zone, "-p", proxy_conf_path, "-g", KEYRING_PATH],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+        log(DEBUG, "Trying to register Linux hybrid worker")
+        if proc.wait() != 0:
+            log(ERROR, "Linux Hybrid Worker registration failed: " + stderr + "\n" + stdout)
+            return [-1]
+        if not os.path.isfile(AUTO_REGISTERED_WORKER_CONF_PATH):
+            log(ERROR, "Linux Hybrid Worker registration file could not be created")
+            return [-1]
+        else:
+            os.chmod(AUTO_REGISTERED_WORKER_CONF_PATH, PERMISSION_LEVEL_0770)
+
+
+        # start the worker manager proc
 
         if start_worker_manager_process(workspace_id) < 0:
             log(ERROR, "Worker manager process could not be started. Set_Marshall returned [-1]")
@@ -120,15 +153,22 @@ OPTION_RESOURCE_VERSION = "resource_version"
 OPTION_HYBRID_WORKER_PATH = "hybrid_worker_path"
 OPTION_DISABLE_WORKER_CREATION = "disable_worker_creation"
 
-WORKER_CONF_DIR = "/var/opt/microsoft/omsagent/state/automationworker"
-OMS_CONF_FILE_PATH = os.path.join(WORKER_CONF_DIR, "oms.conf")
-AUTO_REGISTERED_WORKER_CONF_PATH = os.path.join(WORKER_CONF_DIR, "worker.conf")
-MANUALLY_REGISTERED_WORKER_CONF_PATH = os.path.join(WORKER_CONF_DIR, "diy.conf")
+WORKER_STATE_DIR = "/var/opt/microsoft/omsagent/state/automationworker"
+OMS_CONF_FILE_PATH = os.path.join(WORKER_STATE_DIR, "oms.conf")
+AUTO_REGISTERED_WORKER_CONF_PATH = os.path.join(WORKER_STATE_DIR, "worker.conf")
+MANUALLY_REGISTERED_WORKER_CONF_PATH = os.path.join(WORKER_STATE_DIR, "diy.conf")
 
 DSC_RESOURCE_VERSION_FILE = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWorker/VERSION"
 OMS_ADMIN_CONFIG_FILE = "/etc/opt/microsoft/omsagent/conf/omsadmin.conf"
 WORKING_DIRECTORY_PATH = "/var/opt/microsoft/omsagent/run/automationworker"
 WORKER_MANAGER_START_PATH = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/main.py"
+HYBRID_WORKER_START_PATH = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/worker/hybridworker.py"
+PROXY_CONF_PATH_LEGACY="/etc/opt/microsoft/omsagent/conf/proxy.conf"
+PROXY_CONF_PATH_NEW="/etc/opt/microsoft/omsagent/proxy.conf"
+REGISTRATION_FILE_PATH = "/opt/microsoft/omsconfig/modules/nxOMSAutomationWorker/DSCResources/MSFT_nxOMSAutomationWorkerResource/automationworker/scripts/register_oms.py"
+OMS_CERTIFICATE_PATH = "/etc/opt/microsoft/omsagent/certs/oms.crt"
+OMS_CERT_KEY_PATH = "/etc/opt/microsoft/omsagent/certs/oms.key"
+KEYRING_PATH="/etc/opt/omi/conf/omsconfig/keyring.gpg"
 
 # permission level rwx rwx ---
 # leading zero is necessary because this is an octal number
@@ -179,7 +219,7 @@ def write_omsconf_file(updates_enabled, diy_enabled):
     if not oms_config.has_section(SECTION_OMS_GLOBAL):
         oms_config.add_section(SECTION_OMS_GLOBAL)
     oms_config.set(SECTION_OMS_GLOBAL, OPTION_RESOURCE_VERSION, get_module_version())
-    oms_config.set(SECTION_OMS_GLOBAL, OPTION_HYBRID_WORKER_PATH, WORKER_MANAGER_START_PATH)
+    oms_config.set(SECTION_OMS_GLOBAL, OPTION_HYBRID_WORKER_PATH, HYBRID_WORKER_START_PATH)
     if not oms_config.has_option(SECTION_OMS_GLOBAL, OPTION_DISABLE_WORKER_CREATION):
         oms_config.set(SECTION_OMS_GLOBAL, OPTION_DISABLE_WORKER_CREATION, "False")
     oms_config_fp = open(OMS_CONF_FILE_PATH, 'wb')
@@ -358,6 +398,43 @@ def nxautomation_user_exists():
     log(INFO, "%s was found on the system" %(AUTOMATION_USER))
     return True
 
+def read_oms_primary_workspace_config_file():
+    # Reads the oms config file
+    # Returns: AgentID config value
+    if os.path.isfile(OMS_ADMIN_CONFIG_FILE):
+        # the above path always points to the oms configuration file of the primary workspace
+        try:
+            keyvals = config_file_to_kv_pair(OMS_ADMIN_CONFIG_FILE)
+            return keyvals[OPTION_OMS_WORKSPACE_ID].strip(), keyvals[OPTION_AGENT_ID].strip()
+        except ConfigParser.NoSectionError, exception:
+            log(DEBUG, exception.message)
+            raise ConfigParser.Error(exception.message)
+        except ConfigParser.NoOptionError, exception:
+            log(DEBUG, exception.message)
+            raise ConfigParser.Error(exception.message)
+    else:
+        error_string = "could not find file " + OMS_ADMIN_CONFIG_FILE
+        log(DEBUG, error_string)
+        raise ConfigParser.Error(error_string)
+
+
+def config_file_to_kv_pair(filename):
+    # gets key value pairs from files with similar format to omsadmin.conf
+    retval = dict()
+    f = open(filename, "r")
+    contents = f.read()
+    f.close()
+    lines = contents.splitlines()
+    for line in lines:
+        # Find first '='; everything before is key, everything after is value
+        midpoint = line.find("=")
+        if (midpoint == 0 or midpoint == -1):
+            # Skip over lines without = or lines that begin with =
+            continue
+        key = line[:midpoint]
+        value = line[midpoint + 1:]
+        retval[key] = value
+    return retval
 
 def log(level, message):
     try:
