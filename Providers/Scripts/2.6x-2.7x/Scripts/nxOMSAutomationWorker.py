@@ -90,7 +90,7 @@ def Set_Marshall(ResourceSettings):
         return [0]
 
     except Exception, e:
-        log(ERROR, "Set_Marshall returned [-1] with followin error %s" %e.message)
+        log(ERROR, "Set_Marshall returned [-1] with following error %s" %e.message)
         return [-1]
 
 
@@ -325,10 +325,10 @@ def get_worker_manager_pid_and_version(workspace_id, throw_error_on_multiple_fou
         if process_line:
             # make sure process_line is not null or empty
             split_line = process_line.strip().split(" ")
-            pid = int(split_line[0])
             args = " ".join(split_line[1:])
-            version = split_line[-1].strip()
             if WORKER_MANAGER_START_PATH in args and workspace_id in args:
+                pid = int(split_line[0])
+                version = split_line[-1].strip()
                 manager_processes_found += 1
                 if throw_error_on_multiple_found and manager_processes_found > 1:
                     raise AssertionError("More than one manager processes found")
