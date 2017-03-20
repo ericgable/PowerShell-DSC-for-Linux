@@ -324,7 +324,7 @@ def get_worker_manager_pid_and_version(workspace_id, throw_error_on_multiple_fou
     for process_line in processes:
         if process_line:
             # make sure process_line is not null or empty
-            split_line = process_line.split(" ")
+            split_line = process_line.strip().split(" ")
             pid = int(split_line[0])
             args = " ".join(split_line[1:])
             version = split_line[-1].strip()
