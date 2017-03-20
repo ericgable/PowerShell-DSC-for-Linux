@@ -118,7 +118,7 @@ def Test_Marshall(ResourceSettings):
         log(INFO, "Test_Marshall returned [-1]: worker manager isn't running or is not latest")
         return [-1]
     # All went well
-    log(DEBUG, "Test_Marshall returned [0] for non_primary workpsace")
+    log(DEBUG, "Test_Marshall returned [0]")
     return [0]
 
 
