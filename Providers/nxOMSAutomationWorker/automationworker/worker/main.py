@@ -283,7 +283,7 @@ class OMSConfiguration:
                                                 self.KEY_MANUALLY_AUTO_REGISTERED_WORKER_CONF_PATH:
                                                     self.DEFAULT_EMPTY_VALUE,
                                                 self.KEY_HYBRID_WORKER_PATH: self.DEFAULT_HYBRID_WORKER_PATH,
-                                                self.KEY_DISABLE_WORKER_CREATION: False})
+                                                self.KEY_DISABLE_WORKER_CREATION: "False"})
         config.read(self.oms_configuration_path)
         return config
 
@@ -323,7 +323,7 @@ class OMSConfiguration:
 
     def get_disable_worker_creation(self):
         config = self.get_config_reader()
-        return config.get(self.SECTION_OMS_GLOBAL, self.KEY_DISABLE_WORKER_CREATION)
+        return config.getboolean(self.SECTION_OMS_GLOBAL, self.KEY_DISABLE_WORKER_CREATION)
 
 
 def main():
