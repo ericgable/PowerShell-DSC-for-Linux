@@ -31,4 +31,4 @@ script:
   - cd ..
   - sudo make reg
   - cd /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/Tests 
-  - python ./test_nxProviders.py
+  - sudo python ./test_nxProviders.py
