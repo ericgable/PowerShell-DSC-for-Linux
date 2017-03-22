@@ -42,10 +42,10 @@ script:
   # Make and install ostc-openssl
   - cd ../../../ostc-openssl/openssl-0.9.8
   - ./config no-asm -fPIC --prefix=/usr/local_ssl_0.9.8 shared
-  - make &&  make install_sw
+  - make &&  sudo make install_sw
   - cd ../openssl-1.0.0
   - ./config --prefix=/usr/local_ssl_1.0.0 shared -no-ssl2 -no-ec -no-ec2m -no-ecdh
-  - make && make depend && make install_sw
+  - make && make depend && sudo make install_sw
   # Make Build-Powershell-DSC-for-Linux
   - cd ../../Build-Powershell-DSC-for-Linux/dsc/build
   - ./configure --enable-debug 
