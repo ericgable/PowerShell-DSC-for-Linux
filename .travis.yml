@@ -45,7 +45,7 @@ script:
   - make &&  sudo make install_sw
   - cd ../openssl-1.0.0
   - ./config --prefix=/usr/local_ssl_1.0.0 shared -no-ssl2 -no-ec -no-ec2m -no-ecdh
-  - make && make depend && sudo make install_sw
+  - make depend && make && sudo make install_sw
   # Make Build-Powershell-DSC-for-Linux
   - cd ../../Build-Powershell-DSC-for-Linux/dsc/build
   - ./configure --enable-debug 
