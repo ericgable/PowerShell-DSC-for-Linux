@@ -2,6 +2,8 @@ language: c
 dist: trusty   # Travis build machine is Ubuntu Trusty 14.04 x64
 sudo: required # A sudo enabled, full VM is used for building instead of a docker container
 
+git:
+  submodules: false
 
 before_install:
   - sudo apt-get update -qq
@@ -12,13 +14,18 @@ before_install:
 # We will ignore this clone and clone the superproject Build-Powershell-DSC-for-Linux as follows
 
 install:
-  - cd ../..
-  - git clone --recursive https://github.com/Microsoft/ostc-openssl.git 
   - git clone https://github.com/Microsoft/Build-Powershell-DSC-for-Linux.git Microsoft/Build-Powershell-DSC-for-Linux
   - cd Microsoft/Build-Powershell-DSC-for-Linux
-  # change url from ssh to https for submodules, travis-ci cannot download a submodule that isn’t on a public url
+  # change url from ssh to https for submodules, travis-ci cannot download a submodule that is on a public url.
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules 
   - git submodule update --init --recursive dsc omi pal
+  - # Do the same for ostc-openssl
+  - cd ../..
+  - git clone https://github.com/Microsoft/ostc-openssl.git Microsoft/ostc-openssl
+  - cd Microsoft/ostc-openssl
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules 
+  - git submodule update --init --recursive openssl-0.9.8 openssl-1.0.0
+  - cd ../Build-Powershell-DSC-for-Linux
 
 before_script:
   - git checkout master && git submodule foreach git checkout master
