@@ -14,15 +14,16 @@ before_install:
 # We will ignore this clone and clone the superproject Build-Powershell-DSC-for-Linux as follows
 
 install:
-  - git clone https://github.com/Microsoft/Build-Powershell-DSC-for-Linux.git Microsoft/Build-Powershell-DSC-for-Linux
-  - cd Microsoft/Build-Powershell-DSC-for-Linux
+  - cd ..
+  - git clone https://github.com/Microsoft/Build-Powershell-DSC-for-Linux.git ./Build-Powershell-DSC-for-Linux
+  - cd ./Build-Powershell-DSC-for-Linux
   # change url from ssh to https for submodules, travis-ci cannot download a submodule that is on a public url.
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules 
   - git submodule update --init --recursive dsc omi pal
   - # Do the same for ostc-openssl
-  - cd ../..
-  - git clone https://github.com/Microsoft/ostc-openssl.git Microsoft/ostc-openssl
-  - cd Microsoft/ostc-openssl
+  - cd ..
+  - git clone https://github.com/Microsoft/ostc-openssl.git ./ostc-openssl
+  - cd ./ostc-openssl
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules 
   - git submodule update --init --recursive openssl-0.9.8 openssl-1.0.0
   - cd ../Build-Powershell-DSC-for-Linux
@@ -41,10 +42,10 @@ script:
   # Make and install ostc-openssl
   - cd ../../../ostc-openssl/openssl-0.9.8
   - ./config no-asm -fPIC --prefix=/usr/local_ssl_0.9.8 shared
-  - make && make depend && make install_sw
+  - make &&  make install_sw
   - cd ../openssl-1.0.0
   - ./config --prefix=/usr/local_ssl_1.0.0 shared -no-ssl2 -no-ec -no-ec2m -no-ecdh
-  - make && make install_sw
+  - make && make depend && make install_sw
   # Make Build-Powershell-DSC-for-Linux
   - cd ../../Build-Powershell-DSC-for-Linux/dsc/build
   - ./configure --enable-debug 
