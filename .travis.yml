@@ -51,7 +51,7 @@ script:
   - ./configure --enable-debug 
   - make
   - cd ../target
-  - sudo dpkg -i omi-1.2.0.ssl_100.x64.deb dsc-1.1.1-499.ssl_100.x64.deb
+  - sudo dpkg -i ./omi-*ssl_100.x64.deb ./dsc-*ssl_100.x64.deb
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxComputerManagement_1.0.zip
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxMySQL_1.0.zip
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxNetworking_1.0.zip
