@@ -8,7 +8,7 @@ git:
 before_install:
   - sudo apt-get update -qq
   # Pre-reqs for building dsc
-  - sudo apt-get install -qq pkg-config make bison g++ rpm librpm-dev libpam0g-dev libssl-dev mysql-server libmysqlclient-dev 
+  - sudo apt-get install pkg-config make bison g++ rpm librpm-dev libpam0g-dev libssl-dev mysql-server libmysqlclient-dev 
   - sudo dpkg --get-selections | grep hold
 
 # Travis-CI automatically clones the Powershell-DSC-for-Linux repo since this is where this .travis.yml file is located
@@ -56,6 +56,7 @@ script:
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxComputerManagement_1.0.zip
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxMySQL_1.0.zip
   - sudo /opt/microsoft/dsc/Scripts/InstallModule.py ./nxNetworking_1.0.zip
+  - sudo cp  ../../../PowerShell-DSC-for-Linux/Providers/Scripts/2.6x-2.7x/Scripts/nxFileInventory.py /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
   - sudo cp -r ../../../PowerShell-DSC-for-Linux/Providers/Scripts/2.6x-2.7x/Scripts/Tests /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
   - cd /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/Tests/
   - sudo python ./test_nxProviders.py
