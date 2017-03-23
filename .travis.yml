@@ -8,8 +8,7 @@ git:
 before_install:
   - sudo apt-get update -qq
   # Pre-reqs for building dsc
-  - sudo apt-get install pkg-config make bison g++ rpm librpm-dev libpam0g-dev libssl-dev mysql-server libmysqlclient-dev 
-  - sudo dpkg --get-selections | grep hold
+  - sudo apt-get install  pkg-config make bison g++ rpm librpm-dev libpam0g-dev libssl-dev libmysqlclient-dev ufw mysql-server-5.5 mysql-server 
 
 # Travis-CI automatically clones the Powershell-DSC-for-Linux repo since this is where this .travis.yml file is located
 # We will ignore this clone and clone the superproject Build-Powershell-DSC-for-Linux as follows
