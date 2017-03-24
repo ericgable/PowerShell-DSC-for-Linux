@@ -34,5 +34,5 @@ script:
   - rm -rf dsc
   - cp -R ../PowerShell-DSC-for-Linux dsc
   - cd ./dsc/build
-  - ./configure --noenableulinux
+  - ./configure --noenable-ulinux
   - make
