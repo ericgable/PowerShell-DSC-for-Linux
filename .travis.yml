@@ -33,6 +33,6 @@ script:
   - # Patch in the version of Powershell-DSC-for-Linux that Travis gave to us
   - rm -rf dsc
   - cp -R ../Powershell-DSC-for-Linux dsc
-  - cd dsc/build
+  - cd ./dsc/build
   - ./configure --noenableulinux
   - make
