@@ -30,9 +30,9 @@ script:
   - cd ../bld-dsc
   - git submodule foreach git checkout master
   -
-  - # Patch in the version of Powershell-DSC-for-Linux that Travis gave to us
+  - # Patch in the version of PowerShell-DSC-for-Linux that Travis gave to us
   - rm -rf dsc
-  - cp -R ../Powershell-DSC-for-Linux dsc
+  - cp -R ../PowerShell-DSC-for-Linux dsc
   - cd ./dsc/build
   - ./configure --noenableulinux
   - make
