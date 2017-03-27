@@ -36,8 +36,8 @@ script:
   - cd ./dsc/build
   - ./configure --noenable-ulinux
   - make local
-#   - cd omi*
-#   - sudo make install
-#   - cd ../
-#   - sudo make reg
+  - cd ../omi*
+  - sudo make install
+  - cd ../
+  - sudo make reg
 
