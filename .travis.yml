@@ -40,6 +40,7 @@ script:
   - sudo make install
   - cd ../
   - sudo make reg
-  - sudo cp -r ./Providers/Scripts/2.6x-2.7x/Scripts/Tests /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
-  - cd /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/Tests
-  - sudo python ./test_nxProviders.py
+#  - sudo cp -r ./Providers/Scripts/2.6x-2.7x/Scripts/Tests /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
+  - sudo ls  ./Providers/Scripts/2.6x-2.7x/Scripts/Tests /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
+#  - cd /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/Tests
+#  - sudo python ./test_nxProviders.py
