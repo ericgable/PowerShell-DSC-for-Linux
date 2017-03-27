@@ -22,9 +22,9 @@ addons:
       - libcurl4-gnutls-dev
 
 script:
-  - # Fetch the Build-Powershell-DSC-for-Linux repository for dependencies to build from
+  - # Fetch the Build-PowerShell-DSC-for-Linux repository for dependencies to build from
   - git config --global 'url.https://github.com/.insteadOf' 'git@github.com:'
-  - git clone --recursive 'https://github.com/Microsoft/Build-Powershell-DSC-for-Linux.git' ../bld-dsc
+  - git clone --recursive 'https://github.com/Microsoft/Build-PowerShell-DSC-for-Linux.git' ../bld-dsc
   -
   - # Master branch for all submodules
   - cd ../bld-dsc
@@ -35,4 +35,9 @@ script:
   - cp -R ../PowerShell-DSC-for-Linux dsc
   - cd ./dsc/build
   - ./configure --noenable-ulinux
-  - make
+  - make local
+#   - cd omi*
+#   - sudo make install
+#   - cd ../
+#   - sudo make reg
+
