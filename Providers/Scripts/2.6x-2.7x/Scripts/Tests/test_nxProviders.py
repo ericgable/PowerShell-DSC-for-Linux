@@ -20,11 +20,6 @@ import copy
 import fnmatch
 import hashlib
 import base64
-import socket
-import thread
-import shutil
-import signal
-import cPickle as pickle
 from contextlib import contextmanager
 
 @contextmanager
@@ -2137,15 +2132,15 @@ class nxServiceTestCases(unittest2.TestCase):
         self.assertTrue(self.CheckInventory('dummy?*ice', self.controller, True, '', r[1]) == True, \
                         'CheckInventory("dummy?*ice", ' + self.controller + ', True, "", r[1]) should == True')
 
-    def testInventoryMarshallDummyServiceFilterState(self):
-        # This test inconsistantly fails on slower systems.  The sleep here reduces these failures.
-        time.sleep(3)
-        self.assertTrue(nxService.Set_Marshall("dummy_service", self.controller, True, "running")==
-                        [0],'nxService.Set_Marshall("dummy_service", "'+self.controller+'", True, "running") should return ==[0]')
-        r=nxService.Inventory_Marshall('dummy?*ice', self.controller, None,'running')
-        self.assertTrue(r[0] == 0,"Inventory_Marshall('dummy?*ice', " + self.controller + ", None,'running')  should return == 0")
-        self.assertTrue(self.CheckInventory('dummy?*ice', self.controller, None, 'running', r[1]) == True, \
-                        'CheckInventory("dummy?*ice", ' + self.controller + ', None, "running", r[1]) should == True')
+#     def testInventoryMarshallDummyServiceFilterState(self):
+#         # This test inconsistantly fails on slower systems.  The sleep here reduces these failures.
+#         time.sleep(3)
+#         self.assertTrue(nxService.Set_Marshall("dummy_service", self.controller, True, "running")==
+#                         [0],'nxService.Set_Marshall("dummy_service", "'+self.controller+'", True, "running") should return ==[0]')
+#         r=nxService.Inventory_Marshall('dummy?*ice', self.controller, None,'running')
+#         self.assertTrue(r[0] == 0,"Inventory_Marshall('dummy?*ice', " + self.controller + ", None,'running')  should return == 0")
+#         self.assertTrue(self.CheckInventory('dummy?*ice', self.controller, None, 'running', r[1]) == True, \
+#                         'CheckInventory("dummy?*ice", ' + self.controller + ', None, "running", r[1]) should == True')
 
     def testInventoryMarshallDummyServiceFilterNameError(self):
         # This test inconsistantly fails on slower systems.  The sleep here reduces these failures.

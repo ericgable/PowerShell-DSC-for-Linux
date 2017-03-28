@@ -32,7 +32,7 @@ script:
   -
   - # Patch in the version of PowerShell-DSC-for-Linux that Travis gave to us
   - rm -rf dsc
-  - cp -R ../PowerShell-DSC-for-Linux dsc
+  - cp -R ../Power?hell-DSC-for-Linux dsc
   - cd ./dsc/build
   - ./configure --noenable-ulinux
   - make local
@@ -40,6 +40,5 @@ script:
   - sudo make install
   - cd ../
   - sudo make reg
-#  - sudo cp -r ./Providers/Scripts/2.6x-2.7x/Scripts/Tests /opt/microsoft/dsc/Scripts/2.6x-2.7x/Scripts/
   - cd /opt/omi-*/share/dsc/Scripts/2.6x-2.7x/Scripts/Tests/
   - sudo python ./test_nxProviders.py
