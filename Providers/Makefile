@@ -208,6 +208,8 @@ endef
 $(foreach provider,$(PROVIDERS),\
     $(eval $(call PER-PROVIDER-RULES,$(provider))))
 
+$(foreach provider,$(TEST_PROVIDERS),\
+    $(eval $(call PER-PROVIDER-RULES,$(provider))))
 
 # miscellaneous rules
 ################################################################################
