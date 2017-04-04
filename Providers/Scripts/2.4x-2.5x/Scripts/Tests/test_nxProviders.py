@@ -5,7 +5,6 @@
 import time
 import os
 import sys
-import hashlib
 import grp
 import imp
 import subprocess
@@ -16,8 +15,11 @@ import ctypes
 import re
 import inspect
 import copy
+import sha
 import fnmatch
+import md5
 import base64
+
 
 def opened_w_error(filename, mode="r"):
     """
@@ -3352,7 +3354,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallSingleFile(self):
-        print('Using path:' + self.basepath + 'basedirfile1.txt') 
+        print 'Using path:' + self.basepath + 'basedirfile1.txt'
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3368,7 +3370,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallSingleFile_omsadminconf(self):
-        print('Using path:' + self.basepath + 'omsadmin.conf')
+        print 'Using path:' + self.basepath + 'omsadmin.conf'
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
