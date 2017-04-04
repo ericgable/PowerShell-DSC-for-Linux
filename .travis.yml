@@ -50,6 +50,10 @@ script:
   - cd Python-2.4.6
   - ./configure
   - sed -i "s/#zlib/zlib/" Modules/Setup
+  - sed -i "s/#_socket/_socket/" Modules/Setup
+  - sed -i "s/#_ssl_ssl/_ssl_ssl/" Modules/Setup
+  - sed -i "s/#md5/md5/" Modules/Setup
+  - sed -i "s/#sha/sha/" Modules/Setup
   - make
   - sudo make altinstall
   - cd ..
