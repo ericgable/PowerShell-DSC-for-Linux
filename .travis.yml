@@ -21,7 +21,9 @@ addons:
       - curl
       - libcurl4-gnutls-dev
       - libc6-dev
+      - zlib1g
       - zlib1g-dev
+      - openssl
 
 script:
   - # Fetch the Build-PowerShell-DSC-for-Linux repository for dependencies to build from
@@ -50,7 +52,8 @@ script:
   - wget https://www.python.org/ftp/python/2.4.6/Python-2.4.6.tgz
   - tar -xzf Python-2.4.6.tgz
   - cd Python-2.4.6
-  - ./configure
+  - 
+  - ./configure --with-ssl --with-zlib
   - sed -i "s/#zlib/zlib/" Modules/Setup
   - sed -i "s/#_socket/_socket/" Modules/Setup
   - sed -i "s/#_ssl_ssl/_ssl_ssl/" Modules/Setup
