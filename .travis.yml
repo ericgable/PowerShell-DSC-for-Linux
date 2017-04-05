@@ -20,7 +20,8 @@ addons:
       - libmysqlclient-dev
       - curl
       - libcurl4-gnutls-dev
-      - python-dev
+      - libc6-dev
+      - zlib1g-dev
 
 script:
   - # Fetch the Build-PowerShell-DSC-for-Linux repository for dependencies to build from
