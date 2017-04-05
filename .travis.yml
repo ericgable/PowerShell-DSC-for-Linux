@@ -4,7 +4,7 @@ sudo: required # A sudo enabled, full VM is used for building instead of a docke
 
 branches:
   only:
-  - master
+    - master
 
 addons:
   apt:
@@ -20,7 +20,6 @@ addons:
       - libmysqlclient-dev
       - curl
       - libcurl4-gnutls-dev
-      - libc6-dev
       - zlib1g
       - zlib1g-dev
       - openssl
@@ -44,15 +43,11 @@ script:
   - sudo make install
   - cd ../
   - sudo make reg
-  - # Python tests for 2.6x-2.7x
-#   - cd /opt/omi-*/share/dsc/Scripts/2.6x-2.7x/Scripts/Tests/
-#   - sudo python ./test_nxProviders.py
   - # Python tests for 2.4x-2.5x
   - cd /tmp
   - wget https://www.python.org/ftp/python/2.4.6/Python-2.4.6.tgz
   - tar -xzf Python-2.4.6.tgz
   - cd Python-2.4.6
-  - 
   - ./configure
   - sed -i "s/#zlib/zlib/" Modules/Setup
   - sed -i "s/#_socket/_socket/" Modules/Setup
@@ -70,9 +65,12 @@ script:
   - sudo python2.4 ./setup.py build install
   - cd /opt/omi-*/share/dsc/Scripts/2.4x-2.5x/Scripts/Tests/
   - sudo python2.4 ./test_nxProviders.py
-#   - # Python tests for 3.x
-#   - cd /opt/omi-*/share/dsc/Scripts/3.x/Scripts/Tests/
-#   - sudo python3 ./test_nxProviders.py
+  - # Python tests for 2.6x-2.7x
+  - cd /opt/omi-*/share/dsc/Scripts/2.6x-2.7x/Scripts/Tests/
+  - sudo python ./test_nxProviders.py
+  - # Python tests for 3.x
+  - cd /opt/omi-*/share/dsc/Scripts/3.x/Scripts/Tests/
+  - sudo python3 ./test_nxProviders.py
 
 
   
