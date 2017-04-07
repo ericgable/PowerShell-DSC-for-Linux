@@ -33,7 +33,7 @@ def opened_w_error(filename, mode="r"):
 try:
     import unittest2
 except:
-    os.system('tar -zxf ./unittest2-0.5.1.tar.gz' &> /dev/null)
+    os.system('tar -zxf ./unittest2-0.5.1.tar.gz &> /dev/null')
     sys.path.append(os.path.realpath('./unittest2-0.5.1'))
     import unittest2
 
@@ -477,7 +477,7 @@ class nxGroupTestCases(unittest2.TestCase):
         """
         Setup test resources
         """
-        if not os.system('grep jojomamas /etc/group &> /dev/null'):
+        if not os.system('grep -q jojomamas /etc/group'):
             os.system('groupdel jojomamas &> /dev/null')
         if os.system('grep -q jojoma /etc/passwd'):
             os.system('useradd -m jojoma &> /dev/null')
@@ -756,7 +756,7 @@ class nxPackageTestCases(unittest2.TestCase):
         self.pkg = 'nano'
         if platform.dist()[0].lower() == 'suse':
             self.pkg = 'gvim'
-        if os.system('which dpkg &> /dev/null') == 0 :
+        if os.system('which dpkg ') == 0 :
             os.system('dpkg -r ' + self.pkg + ' &> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
                 os.system('dpkg -r dummy &> /dev/null')
@@ -774,7 +774,7 @@ class nxPackageTestCases(unittest2.TestCase):
         Remove test resources.
         """
         time.sleep(4)
-        if os.system('which dpkg &> /dev/null') == 0 :
+        if os.system('which dpkg ') == 0 :
             os.system('dpkg -r ' + self.pkg + ' &> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
                 os.system('dpkg -r dummy &> /dev/null')
@@ -934,7 +934,7 @@ class nxPackageTestCases(unittest2.TestCase):
         self.assertTrue(nxPackage.Test_Marshall('Present','',self.pkg,'',False,'',0)==
                         [0],"nxPackage.Test_Marshall('Present','','" + self.pkg + "','',False,'',0) should return == [0]")
 
-    @unittest2.skipUnless(os.system('which yum &> /dev/null') ==
+    @unittest2.skipUnless(os.system('which yum ') ==
                           0,'groupmode is not implemented.')
     def testSetEnableGroupDefaultProvider(self):
         self.assertTrue(nxPackage.Set_Marshall('Present','','Remote Desktop Clients','',True,'',0)==
@@ -975,7 +975,7 @@ class nxPackageTestCases(unittest2.TestCase):
         self.assertTrue(nxPackage.Test_Marshall('Absent','',self.pkg,'',False,'',0)==
                         [0],"nxPackage.Test_Marshall('Absent','','" + self.pkg + "','',False,'',0) should return == [0]")
 
-    @unittest2.skipUnless(os.system('which yum &> /dev/null') ==
+    @unittest2.skipUnless(os.system('which yum') ==
                           0,'groupmode is not implemented.')
     def testSetDisableGroupDefaultProvider(self):
         self.assertTrue(nxPackage.Set_Marshall('Present','','Remote Desktop Clients','',True,'',0)==
@@ -2449,7 +2449,7 @@ class tBag(object):
 def FirewallTypeIs():
     t=['ufw','SuSEfirewall2','firewalld','iptables']
     for f in t:
-        if os.system('which ' + f + ' &> /dev/null') == 0:
+        if os.system('which ' + f) == 0:
             return f
     return 'nothing'
 
@@ -2459,7 +2459,7 @@ def IsFirewallRunning():
     cmd='ps -ef | grep -v grep | grep ' + FirewallTypeIs()
     if FirewallTypeIs() == 'SuSEfirewall2':
         cmd='rcSuSEfirewall2 status | grep running'
-    return os.system(cmd + ' &> /dev/null')
+    return os.system(cmd)
 
 def StartFirewall(firewall):
     if firewall == 'iptables':
