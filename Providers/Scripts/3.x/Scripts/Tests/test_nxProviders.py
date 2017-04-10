@@ -2459,7 +2459,7 @@ def StartFirewall(firewall):
     t['ufw']='yes | ufw enable '
     t['SuSEfirewall2']='SuSEfirewall2 start'
     t['firewalld']='service firewalld start'
-    os.system(t[firewall] + ' &> /dev/null')
+    os.system(t[firewall])
 
 def StopFirewall(firewall):
     if firewall == 'iptables':
@@ -2468,7 +2468,7 @@ def StopFirewall(firewall):
     t['ufw']='ufw disable'
     t['SuSEfirewall2']='SuSEfirewall2 stop'
     t['firewalld']='service firewalld stop'
-    os.system(t[firewall] + ' &> /dev/null')
+    os.system(t[firewall])
 
 
 @unittest2.skipUnless(FirewallTypeIs() != 

@@ -2463,7 +2463,7 @@ def StartFirewall(firewall):
     t['ufw']='yes | ufw enable '
     t['SuSEfirewall2']='SuSEfirewall2 start'
     t['firewalld']='service firewalld start'
-    os.system(t[firewall] + ' &> /dev/null')
+    os.system(t[firewall])
 
 def StopFirewall(firewall):
     if firewall == 'iptables':
@@ -2472,7 +2472,7 @@ def StopFirewall(firewall):
     t['ufw']='ufw disable'
     t['SuSEfirewall2']='SuSEfirewall2 stop'
     t['firewalld']='service firewalld stop'
-    os.system(t[firewall] + ' &> /dev/null')
+    os.system(t[firewall])
 
 
 class nxFirewallTestCases(unittest2.TestCase):
@@ -3224,6 +3224,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
             'Contents of joedir1file2.txt\n')
         open(cls.basepath+'joedir0/joedir1/joedir1file3.bin','wb+').write(\
             '\xff\xff\xfe\x00\xfe\x00\xff\x00\x00\x00')
+        sleep 1
         os.chown(cls.basepath+'joedir0/joedir1/joedir1file3.bin', 7777, 7777)
         open(cls.basepath+'joedir0/joedir1/joedir2/joedir2file1.txt','w+').write(\
             'Contents of joedir2file1.txt\n')
