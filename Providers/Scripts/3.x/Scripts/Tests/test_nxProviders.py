@@ -188,9 +188,9 @@ class nxUserTestCases(unittest2.TestCase):
         Setup test resources
         """
         if not os.system('grep -q jojoma /etc/passwd'):
-            os.system('userdel -r jojoma &> /dev/null')
+            os.system('userdel -r jojoma 2> /dev/null')
         if not os.system('grep -q jojoma /etc/group'):
-            os.system('groupdel jojoma &> /dev/null')
+            os.system('groupdel jojoma 2> /dev/null')
         time.sleep(1)
         nxUser.SetShowMof(True)
         print(self.id() + '\n')
@@ -200,9 +200,9 @@ class nxUserTestCases(unittest2.TestCase):
         Remove test resources.
         """
         if not os.system('grep -q jojoma /etc/passwd'):
-            os.system('userdel -r jojoma &> /dev/null')
+            os.system('userdel -r jojoma 2> /dev/null')
         if not os.system('grep -q jojoma /etc/group'):
-            os.system('groupdel jojoma &> /dev/null')
+            os.system('groupdel jojoma 2> /dev/null')
         time.sleep(1)
 
     def pswd_hash(self,pswd):
@@ -490,9 +490,9 @@ class nxGroupTestCases(unittest2.TestCase):
         Setup test resources
         """
         if not os.system('grep -q jojomamas'):
-            os.system('groupdel jojomamas &> /dev/null')
+            os.system('groupdel jojomamas 2> /dev/null')
         if os.system('grep -q jojoma /etc/passwd'):
-            os.system('useradd -m jojoma &> /dev/null')
+            os.system('useradd -m jojoma 2> /dev/null')
         time.sleep(1)
         nxGroup.SetShowMof(False)
         print(self.id() + '\n')
@@ -501,8 +501,8 @@ class nxGroupTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-        os.system('userdel -r jojoma &> /dev/null')
-        os.system('groupdel jojomamas &> /dev/null')
+        os.system('userdel -r jojoma 2> /dev/null')
+        os.system('groupdel jojomamas 2> /dev/null')
         time.sleep(1)
         nxGroup.SetShowMof(False)
         print(self.id() + '\n')
@@ -649,7 +649,7 @@ class nxScriptTestCases(unittest2.TestCase):
         """
         Setup test resources
         """
-        os.system('useradd -m jojoma &> /dev/null')
+        os.system('useradd -m jojoma 2> /dev/null')
         time.sleep(1)
         self.get_script='#!/bin/bash \ncat /tmp/testfile\n'
         self.test_script='#!/bin/bash \ngrep  "set script successfull" /tmp/testfile\n'
@@ -659,8 +659,8 @@ class nxScriptTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-        os.system('userdel -r jojoma  &> /dev/null')
-        os.system('rm /tmp/testfile &> /dev/null')
+        os.system('userdel -r jojoma  2> /dev/null')
+        os.system('rm /tmp/testfile 2> /dev/null')
         time.sleep(1)
     
     def make_MI(self,retval,GetScript, SetScript, TestScript, User, Group, Result):
@@ -761,14 +761,14 @@ class nxPackageTestCases(unittest2.TestCase):
         if platform.dist()[0].lower() == 'suse':
             self.pkg = 'gvim'
         if os.system('which dpkg') == 0 :
-            os.system('dpkg -r ' + self.pkg + ' &> /dev/null')
+            os.system('dpkg -r ' + self.pkg + ' 2> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
-                os.system('dpkg -r dummy &> /dev/null')
+                os.system('dpkg -r dummy 2> /dev/null')
             self.package_path='./Scripts/Tests/dummy-1.0.deb'
         else :
-            os.system('rpm -e ' + self.pkg + ' &> /dev/null')
+            os.system('rpm -e ' + self.pkg + ' 2> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
-                os.system('rpm -e dummy &> /dev/null')
+                os.system('rpm -e dummy 2> /dev/null')
             self.package_path='./Scripts/Tests/dummy-1.0-1.x86_64.rpm'
         time.sleep(3)
         print(self.id() + '\n')
@@ -779,13 +779,13 @@ class nxPackageTestCases(unittest2.TestCase):
         """
         time.sleep(4)
         if os.system('which dpkg') == 0 :
-            os.system('dpkg -r ' + self.pkg + ' &> /dev/null')
+            os.system('dpkg -r ' + self.pkg + ' 2> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
-                os.system('dpkg -r dummy &> /dev/null')
+                os.system('dpkg -r dummy 2> /dev/null')
         else :
-            os.system('rpm -e ' + self.pkg + ' &> /dev/null')
+            os.system('rpm -e ' + self.pkg + ' 2> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
-                os.system('rpm -e dummy &> /dev/null')
+                os.system('rpm -e dummy 2> /dev/null')
         time.sleep(3)
 
     def CheckInventory(self, Name, Inventory):
@@ -1069,8 +1069,8 @@ class nxFileTestCases(unittest2.TestCase):
         """
         Setup test resources
         """
-        os.system('rm -rf /tmp/*pp* &> /dev/null')
-        os.system('rm -rf /tmp/Python-2.4.6.tgz &> /dev/null')
+        os.system('rm -rf /tmp/*pp* 2> /dev/null')
+        os.system('rm -rf /tmp/Python-2.4.6.tgz 2> /dev/null')
         nxFile.SetShowMof(False)
         print(self.id() + '\n')
         
@@ -1078,8 +1078,8 @@ class nxFileTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-        os.system('rm -rf /tmp/*pp* &> /dev/null')
-        os.system('rm -rf /tmp/Python-2.4.6.tgz &> /dev/null')
+        os.system('rm -rf /tmp/*pp* 2> /dev/null')
+        os.system('rm -rf /tmp/Python-2.4.6.tgz 2> /dev/null')
 
     def make_MI(self,retval,DestinationPath, SourcePath, Ensure, Type, Force, Contents, Checksum, Recurse, Links, Owner, Group, Mode, ModifiedDate):
         d=dict();
@@ -1901,7 +1901,7 @@ class nxServiceTestCases(unittest2.TestCase):
                 os.chmod('/usr/sbin/dummy_service.py',0o744)
             except:
                 print(repr(sys.exc_info()))
-            os.system('systemctl --system daemon-reload &> /dev/null')
+            os.system('systemctl --system daemon-reload 2> /dev/null')
         elif nxService.UpstartExists():
             self.controller='upstart'
             try:
@@ -1932,22 +1932,22 @@ class nxServiceTestCases(unittest2.TestCase):
         """
         dist=platform.dist()[0].lower()
         if nxService.SystemdExists():
-            os.system('systemctl disable dummy_service &> /dev/null')
+            os.system('systemctl disable dummy_service 2> /dev/null')
             if 'ubuntu' in dist or 'debian' in dist  or 'cent' in dist:
                 os.system('rm /usr/sbin/dummy_service.py /lib/systemd/system/dummy_service.' + \
-                          'service /etc/systemd/system/multi-user.target.wants/dummy_service.service &> /dev/null')
+                          'service /etc/systemd/system/multi-user.target.wants/dummy_service.service 2> /dev/null')
             else:
-                os.system('rm /usr/sbin/dummy_service.py /etc/rc.d/dummy_service &> /dev/null')
-            os.system('systemctl --system daemon-reload &> /dev/null')
+                os.system('rm /usr/sbin/dummy_service.py /etc/rc.d/dummy_service 2> /dev/null')
+            os.system('systemctl --system daemon-reload 2> /dev/null')
         elif nxService.UpstartExists():
-            os.system('update-rc.d -f dummy_service remove &> /dev/null')
-            os.system('rm /usr/sbin/dummy_service.py /etc/init/dummy_service.conf /etc/init.d/dummy_service /etc/default/dummy_service &> /dev/null')
+            os.system('update-rc.d -f dummy_service remove 2> /dev/null')
+            os.system('rm /usr/sbin/dummy_service.py /etc/init/dummy_service.conf /etc/init.d/dummy_service /etc/default/dummy_service 2> /dev/null')
         elif nxService.InitExists():
-            os.system('chkconfig --del dummy_service &> /dev/null')
-            os.system('rm /usr/sbin/dummy_service.py /etc/init.d/dummy_service &> /dev/null')
+            os.system('chkconfig --del dummy_service 2> /dev/null')
+            os.system('rm /usr/sbin/dummy_service.py /etc/init.d/dummy_service 2> /dev/null')
             
         time.sleep(1)
-        os.system("ps -ef | grep -v grep | grep dummy_service | awk '{print $2}' | xargs -L1 kill &> /dev/null")
+        os.system("ps -ef | grep -v grep | grep dummy_service | awk '{print $2}' | xargs -L1 kill 2> /dev/null")
 
     def CheckInventory(self, Name, Controller, Enabled, State, Inventory):
         if len(Inventory['__Inventory'].value) < 1:
@@ -2179,7 +2179,7 @@ class nxSshAuthorizedKeysTestCases(unittest2.TestCase):
         Remove test resources.
         """
         path='/home/jojoma/.ssh/authorized_keys'
-        os.system('rm -rf ' + path + ' &> /dev/null')
+        os.system('rm -rf ' + path + ' 2> /dev/null')
 
     def make_MI(self,retval, KeyComment, Ensure, UserName, Key):
         d=dict();
@@ -2263,7 +2263,7 @@ class nxEnvironmentTestCases(unittest2.TestCase):
         """
         Setup test resources
         """
-        os.system('rm /tmp/environment /tmp/DSCEnvironment.sh &> /dev/null')
+        os.system('rm /tmp/environment /tmp/DSCEnvironment.sh 2> /dev/null')
         path='/etc/environment'
         if os.path.isfile(path) :
             os.system('cp -p ' + path + ' /tmp/')
@@ -2459,7 +2459,7 @@ def StartFirewall(firewall):
     t['ufw']='yes | ufw enable '
     t['SuSEfirewall2']='SuSEfirewall2 start'
     t['firewalld']='service firewalld start'
-    os.system(t[firewall])
+    os.system(t[firewall] + ' 2> /dev/null')
 
 def StopFirewall(firewall):
     if firewall == 'iptables':
@@ -2468,7 +2468,7 @@ def StopFirewall(firewall):
     t['ufw']='ufw disable'
     t['SuSEfirewall2']='SuSEfirewall2 stop'
     t['firewalld']='service firewalld stop'
-    os.system(t[firewall])
+    os.system(t[firewall] + ' 2> /dev/null')
 
 
 @unittest2.skipUnless(FirewallTypeIs() != 
@@ -3178,7 +3178,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
         """
         cls.create_files = False
         cls.linkfarm = '/tmp/linkfarm/'
-        os.system('rm -rf ' + cls.linkfarm + ' &> /dev/null')
+        os.system('rm -rf ' + cls.linkfarm + ' 2> /dev/null')
         os.makedirs(cls.linkfarm+'joe')
         os.makedirs(cls.linkfarm+'bob')
         open(cls.linkfarm+'joe/linkfarmjoefile1.txt','w+').write(\
@@ -3190,7 +3190,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
         open(cls.linkfarm+'bob/linkfarmbobfile2.txt','w+').write(\
             'Contents of linkfarmbobfile2.txt\n')
         cls.basepath = '/tmp/FileInventory/'
-        os.system('rm -rf ' + cls.basepath + ' &> /dev/null')
+        os.system('rm -rf ' + cls.basepath + ' 2> /dev/null')
         os.makedirs(cls.basepath+'joedir0/joedir1/joedir2/')
         open(cls.basepath+'basedirfile1.txt','w+').write(\
             'Contents of basedirfile1.txt\n')
@@ -3255,7 +3255,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 
     @classmethod    
     def tearDownClass(cls):
-        os.system('rm -rf ' + cls.basepath + ' &> /dev/null')
+        os.system('rm -rf ' + cls.basepath + ' 2> /dev/null')
     
     def setUp(self):
         """
