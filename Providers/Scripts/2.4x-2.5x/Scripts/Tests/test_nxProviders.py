@@ -33,7 +33,7 @@ def opened_w_error(filename, mode="r"):
 try:
     import unittest2
 except:
-    os.system('tar -zxf ./unittest2-0.5.1.tar.gz &> /dev/null')
+    os.system('tar -zxf ./unittest2-0.5.1.tar.gz')
     sys.path.append(os.path.realpath('./unittest2-0.5.1'))
     import unittest2
 
@@ -2286,11 +2286,6 @@ class nxEnvironmentTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-
-        os.system('echo "Contents of /etc/environment are: " 1>&2' )
-        os.system('cat /etc/environment 1>&2')
-        os.system('echo "Contents of /etc/profile.d/DSCEnvironment.sh are: " 1>&2')
-        os.system('cat /etc/profile.d/DSCEnvironment.sh 1>&2')
         path='/etc/environment'
         if os.path.isfile('/tmp/environment') :
             os.system('mv ' + ' /tmp/environment ' + path)
