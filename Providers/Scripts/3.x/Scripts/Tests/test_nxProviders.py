@@ -489,7 +489,7 @@ class nxGroupTestCases(unittest2.TestCase):
         """
         Setup test resources
         """
-        if not os.system('grep -q jojomamas'):
+        if not os.system('grep -q jojomamas /etc/group'):
             os.system('groupdel jojomamas 2> /dev/null')
         if os.system('grep -q jojoma /etc/passwd'):
             os.system('useradd -m jojoma 2> /dev/null')
@@ -2278,10 +2278,6 @@ class nxEnvironmentTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-        os.system('echo "Contents of /etc/environment are: " 1>&2' )
-        os.system('cat /etc/environment 1>&2')
-        os.system('echo "Contents of /etc/profile.d/DSCEnvironment.sh are: " 1>&2')
-        os.system('cat /etc/profile.d/DSCEnvironment.sh 1>&2')
         path='/etc/environment'
         if os.path.isfile('/tmp/environment') :
             os.system('mv ' + ' /tmp/environment ' + path)
@@ -3256,6 +3252,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
     @classmethod    
     def tearDownClass(cls):
         os.system('rm -rf ' + cls.basepath + ' 2> /dev/null')
+        os.system('rm -rf ' + cls.linkfarm + ' 2> /dev/null')
     
     def setUp(self):
         """

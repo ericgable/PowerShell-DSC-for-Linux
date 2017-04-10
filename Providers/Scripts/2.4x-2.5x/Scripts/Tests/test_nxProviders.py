@@ -547,7 +547,6 @@ class nxGroupTestCases(unittest2.TestCase):
                         [0],'Set("jojomamas", "Present", ["jojoma"], "", "", "1101" ) should return == [0]')
 
     def testSetGroupAbsent(self):
-        time.sleep(1)
         self.assertTrue(nxGroup.Set_Marshall("jojomamas", "Present", ["jojoma"], "", "", "1101" ) ==
                         [0],'Set("jojomamas", "Present", ["jojoma"], "", "", "1101" ) should return == [0]')
         time.sleep(2)
@@ -701,46 +700,38 @@ class nxScriptTestCases(unittest2.TestCase):
     def testTestScriptGroup(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
-
         self.assertTrue(r == [0],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )[0] should return == 0')
 
     def testSetScriptGroup(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
-
         self.assertTrue(r[0] == 0,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )[0] should return == 0')
 
     def testGetScriptUserError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "jojoma", "" )
         r=nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(check_values(r,self.make_MI(0,self.get_script,self.set_script,self.test_script, "ojoma", "", "set script successfull\n") ) == False,'nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testTestScriptUserError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "jojoma", "" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(r == [-1],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testSetScriptUserError(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(r[0] == -1,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testGetScriptGroupError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
         r=nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(check_values(r,self.make_MI(0,self.get_script,self.set_script,self.test_script, "", "ojoma" , "set script successfull\n")) == False,'nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
     def testTestScriptGroupError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(r == [-1],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
     def testSetScriptGroupError(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(r[0] == -1,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
 
@@ -774,7 +765,7 @@ class nxPackageTestCases(unittest2.TestCase):
         Remove test resources.
         """
         time.sleep(4)
-        if os.system('which dpkg ') == 0 :
+        if os.system('which dpkg') == 0 :
             os.system('dpkg -r ' + self.pkg + ' 2> /dev/null')
             if os.path.exists('/usr/bin/dummy.sh'):
                 os.system('dpkg -r dummy 2> /dev/null')
@@ -791,7 +782,6 @@ class nxPackageTestCases(unittest2.TestCase):
             if Name != None and len(Name) and not fnmatch.fnmatch(i['Name'].value,Name):
                 print 'Name:' + Name + ' != ' + i['Name'].value
                 return False
-
         return True
 
     def make_MI(self, retval, Ensure, PackageManager, Name, FilePath, PackageGroup, Arguments,
@@ -934,7 +924,7 @@ class nxPackageTestCases(unittest2.TestCase):
         self.assertTrue(nxPackage.Test_Marshall('Present','',self.pkg,'',False,'',0)==
                         [0],"nxPackage.Test_Marshall('Present','','" + self.pkg + "','',False,'',0) should return == [0]")
 
-    @unittest2.skipUnless(os.system('which yum ') ==
+    @unittest2.skipUnless(os.system('which yum') ==
                           0,'groupmode is not implemented.')
     def testSetEnableGroupDefaultProvider(self):
         self.assertTrue(nxPackage.Set_Marshall('Present','','Remote Desktop Clients','',True,'',0)==
@@ -999,8 +989,6 @@ class nxPackageTestCases(unittest2.TestCase):
                         ,"nxPackage.Get_Marshall('Present','','nanoo','',False,'',0)[-1] should return == 0")
 
     def testTestEnableBadNameDefaultProvider(self):
-
-
         self.assertTrue(nxPackage.Test_Marshall('Present','','nanoo','',False,'',0)==
                         [-1],"nxPackage.Test_Marshall('Present','','nanoo','',False,'',0) should return == [-1]")
 
@@ -1019,8 +1007,6 @@ class nxPackageTestCases(unittest2.TestCase):
                         ,"nxPackage.Get_Marshall('Absent','','nanoo','',False,'',0)[0] should return == 0")
 
     def testTestDisableBadNameDefaultProvider(self):
-
-
         self.assertTrue(nxPackage.Test_Marshall('Absent','','nanoo','',False,'',0)==
                         [0],"nxPackage.Test_Marshall('Absent','','nanoo','',False,'',0) should return == [0]")
 
@@ -3224,7 +3210,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
             'Contents of joedir1file2.txt\n')
         open(cls.basepath+'joedir0/joedir1/joedir1file3.bin','wb+').write(\
             '\xff\xff\xfe\x00\xfe\x00\xff\x00\x00\x00')
-        time.sleep(1)
         os.chown(cls.basepath+'joedir0/joedir1/joedir1file3.bin', 7777, 7777)
         open(cls.basepath+'joedir0/joedir1/joedir2/joedir2file1.txt','w+').write(\
             'Contents of joedir2file1.txt\n')
@@ -3309,7 +3294,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
         return repr(l)
 
     def testFileInventoryInventory_MarshallDir(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3324,7 +3308,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 
     
     def testFileInventoryInventory_MarshallFile(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3340,7 +3323,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallSingleFile(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3356,7 +3338,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallSingleFile_omsadminconf(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3402,7 +3383,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallFileRecurse(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3418,7 +3398,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallTypeWildRecurse(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3434,7 +3413,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDir(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3450,7 +3428,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #             print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFile(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3466,7 +3443,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWild(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3482,7 +3458,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDirRecurse(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3498,7 +3473,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFileRecurse(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3514,7 +3488,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWildRecurse(self):
-
         d = {'Links': u'ignore', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3530,7 +3503,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallDirFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3546,7 +3518,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallFileFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3562,7 +3533,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallTypeWildFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3578,7 +3548,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallDirRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3594,7 +3563,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallFileRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3610,7 +3578,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallTypeWildRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3626,7 +3593,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDirFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3642,7 +3608,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFileFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3658,7 +3623,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWildFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3674,7 +3638,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDirRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3690,7 +3653,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFileRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3706,7 +3668,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWildRecurseFollowLink(self):
-
         d = {'Links': u'follow', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3723,7 +3684,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 
 
     def testFileInventoryInventory_MarshallDirManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3739,7 +3699,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallFileManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3755,7 +3714,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallTypeWildManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3771,7 +3729,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallDirRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3787,7 +3744,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallFileRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3803,7 +3759,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallTypeWildRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3819,7 +3774,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDirManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3835,7 +3789,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFileManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3851,7 +3804,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWildManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': False, \
              'MaxContentsReturnable': None, \
@@ -3867,7 +3819,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildDirRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3883,7 +3834,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildFileRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \
@@ -3899,7 +3849,6 @@ class nxFileInventoryTestCases(unittest2.TestCase):
 #            print d['DestinationPath'], d['Contents']
 
     def testFileInventoryInventory_MarshallWildTypeWildRecurseManageLink(self):
-
         d = {'Links': u'manage', 'MaxOutputSize': None, \
              'Checksum': u'md5', 'Recurse': True, \
              'MaxContentsReturnable': None, \

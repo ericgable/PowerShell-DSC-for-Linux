@@ -803,7 +803,6 @@ class nxPackageTestCases(unittest2.TestCase):
             if Name != None and len(Name) and not fnmatch.fnmatch(i['Name'].value,Name):
                 print 'Name:' + Name + ' != ' + i['Name'].value
                 return False
-
         return True
 
     def make_MI(self, retval, Ensure, PackageManager, Name, FilePath, PackageGroup, Arguments,
@@ -2287,11 +2286,6 @@ class nxEnvironmentTestCases(unittest2.TestCase):
         """
         Remove test resources.
         """
-
-        os.system('echo "Contents of /etc/environment are: " 1>&2' )
-        os.system('cat /etc/environment 1>&2')
-        os.system('echo "Contents of /etc/profile.d/DSCEnvironment.sh are: " 1>&2')
-        os.system('cat /etc/profile.d/DSCEnvironment.sh 1>&2')
         path='/etc/environment'
         if os.path.isfile('/tmp/environment') :
             os.system('mv ' + ' /tmp/environment ' + path)
@@ -3266,6 +3260,7 @@ class nxFileInventoryTestCases(unittest2.TestCase):
     @classmethod    
     def tearDownClass(cls):
         os.system('rm -rf ' + cls.basepath + ' 2> /dev/null')
+        os.system('rm -rf ' + cls.linkfarm + ' 2> /dev/null')
     
     def setUp(self):
         """
