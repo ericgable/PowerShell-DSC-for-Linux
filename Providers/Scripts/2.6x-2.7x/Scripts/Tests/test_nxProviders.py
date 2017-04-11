@@ -713,46 +713,38 @@ class nxScriptTestCases(unittest2.TestCase):
     def testTestScriptGroup(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
-
         self.assertTrue(r == [0],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )[0] should return == 0')
 
     def testSetScriptGroup(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )
-
         self.assertTrue(r[0] == 0,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "mail" )[0] should return == 0')
 
     def testGetScriptUserError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "jojoma", "" )
         r=nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(check_values(r,self.make_MI(0,self.get_script,self.set_script,self.test_script, "ojoma", "", "set script successfull\n") ) == False,'nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testTestScriptUserError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "jojoma", "" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(r == [-1],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testSetScriptUserError(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )
-
         self.assertTrue(r[0] == -1,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "ojoma", "" )[-1] should return == -1')
 
     def testGetScriptGroupError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
         r=nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(check_values(r,self.make_MI(0,self.get_script,self.set_script,self.test_script, "", "ojoma" , "set script successfull\n")) == False,'nxScript.Get_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
     def testTestScriptGroupError(self):
         nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
         r=nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(r == [-1],'nxScript.Test_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
     def testSetScriptGroupError(self):
         r=nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )
-
         self.assertTrue(r[0] == -1,'nxScript.Set_Marshall(self.get_script,self.set_script,self.test_script, "", "ojoma" )[-1] should return == -1')
 
 
@@ -2944,7 +2936,7 @@ class nxMySqlUserTestCases(unittest2.TestCase):
         cmd = "DROP USER " + Name + ";"
         cmd='mysql -u root -e "' + cmd + ' FLUSH PRIVILEGES;"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3027,7 +3019,7 @@ class nxMySqlDatabaseTestCases(unittest2.TestCase):
         cmd = "DROP DATABASE " + Name + ";"
         cmd='mysql -u root -e "' + cmd + '"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3096,7 +3088,7 @@ class nxMySqlGrantTestCases(unittest2.TestCase):
         cmd = "REVOKE "+ PermissionType + " ON " + DatabaseName + ".* FROM '" + UserName+"'@'" + Host  + "';"
         cmd='mysql -u root -e "' + cmd + ' FLUSH PRIVILEGES;"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3892,5 +3884,5 @@ if __name__ == '__main__':
     s17=unittest2.TestLoader().loadTestsFromTestCase(nxMySqlGrantTestCases)
     s18=unittest2.TestLoader().loadTestsFromTestCase(nxFileInventoryTestCases)
     alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18])
-    if not unittest2.TextTestRunner(stream=sys.stdout,verbosity=1).run(alltests).wasSuccessful():
+    if not unittest2.TextTestRunner(stream=sys.stdout,verbosity=0).run(alltests).wasSuccessful():
         sys.exit(1)

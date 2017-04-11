@@ -2936,7 +2936,7 @@ class nxMySqlUserTestCases(unittest2.TestCase):
         cmd = "DROP USER " + Name + ";"
         cmd='mysql -u root -e "' + cmd + ' FLUSH PRIVILEGES;"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3019,7 +3019,7 @@ class nxMySqlDatabaseTestCases(unittest2.TestCase):
         cmd = "DROP DATABASE " + Name + ";"
         cmd='mysql -u root -e "' + cmd + '"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3088,7 +3088,7 @@ class nxMySqlGrantTestCases(unittest2.TestCase):
         cmd = "REVOKE "+ PermissionType + " ON " + DatabaseName + ".* FROM '" + UserName+"'@'" + Host  + "';"
         cmd='mysql -u root -e "' + cmd + ' FLUSH PRIVILEGES;"'
         os.environ['MYSQL_PWD'] = 'root'
-        os.system(cmd)
+        os.system(cmd + ' 2> /dev/null')
         os.environ['MYSQL_PWD'] = ''
 
     def setUp(self):
@@ -3884,5 +3884,5 @@ if __name__ == '__main__':
     s17=unittest2.TestLoader().loadTestsFromTestCase(nxMySqlGrantTestCases)
     s18=unittest2.TestLoader().loadTestsFromTestCase(nxFileInventoryTestCases)
     alltests = unittest2.TestSuite([s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18])
-    if not unittest2.TextTestRunner(stream=sys.stdout,verbosity=1).run(alltests).wasSuccessful():
+    if not unittest2.TextTestRunner(stream=sys.stdout,verbosity=0).run(alltests).wasSuccessful():
         sys.exit(1)
